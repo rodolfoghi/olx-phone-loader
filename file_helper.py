@@ -2,9 +2,9 @@ import csv
 import datetime
 
 def dictionary_list_to_csv(dict_list):
-    print(dict_list[0])
     keys = dict_list[0].keys()
     csvfile = get_csv_file_name()
+    print("Gravando o arquivo " + csvfile)
     with open(csvfile, "w") as output:
         writer = csv.DictWriter(output, fieldnames=keys, lineterminator='\n')
         writer.writeheader()

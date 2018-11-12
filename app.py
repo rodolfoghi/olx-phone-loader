@@ -4,7 +4,7 @@ from converter import gif_to_png, image_to_text
 from file_helper import dictionary_list_to_csv
 
 def get_anuncio(url_anuncio):
-    #print("Buscando " + url_anuncio)
+    print("Buscando " + url_anuncio)
     anuncio = {"url": url_anuncio}
     html_anuncio = urlopen(url_anuncio)
     obj_anuncio = BeautifulSoup(html_anuncio.read(), "html.parser")
@@ -44,13 +44,28 @@ def get_anuncios(url):
 
 def run():
     url = ""
-    numero_de_paginas = 1
+
+    while url == "":
+        url = input("Informe a URL desejada: ")
+
+    numero_de_paginas = input("Informe a quantidade de páginas: ")
+
+    if numero_de_paginas == "":
+        numero_de_paginas = 1
+    else:
+        numero_de_paginas = int(numero_de_paginas)
+
     anuncios = []
 
     for page in range(numero_de_paginas):
         pagina_atual = page + 1
-        #print("Obtendo anuncios da pagina " + str(pagina_atual))
-        anuncios_da_pagina = get_anuncios(url + str(pagina_atual))
+        print("Obtendo anuncios da pagina " + str(pagina_atual))
+
+        url_formatada = url
+        if pagina_atual > 1:
+            url_formatada += "&o=" + str(pagina_atual)
+
+        anuncios_da_pagina = get_anuncios(url_formatada)
         anuncios.extend(anuncios_da_pagina)
 
     dictionary_list_to_csv(anuncios)

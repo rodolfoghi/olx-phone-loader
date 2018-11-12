@@ -8,8 +8,7 @@ A web scraper to get data from [OLX](https://www.olx.com.br/) ads.
 2. Install the dependencies with `pip install -r requirements.txt`.
 3. Install [Tesseract](https://github.com/tesseract-ocr/tesseract), instructions [here](https://github.com/tesseract-ocr/tesseract/wiki).
 4. Set the value of variable `ocr.pytesseract.tesseract_cmd` on `converter.py`.
-5. Set the value of variable `url = ""` on `app.py` file. Example: `url = "https://sp.olx.com.br/?q=super+m%C3%A1rio"`.
-6. Run `python app.py` on your prefered terminal.
+5. Run `python app.py` on your prefered terminal.
 
 # How it works
 
