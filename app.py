@@ -1,13 +1,19 @@
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
 from converter import gif_to_png, image_to_text
 from file_helper import dictionary_list_to_csv
+from util import get_site_html, get_bsobj_from
 
 def get_anuncio(url_anuncio):
     print("Buscando " + url_anuncio)
     anuncio = {"url": url_anuncio}
-    html_anuncio = urlopen(url_anuncio)
-    obj_anuncio = BeautifulSoup(html_anuncio.read(), "html.parser")
+
+    html_anuncio = get_site_html(url_anuncio)
+    if html_anuncio is None:
+        return None
+
+    obj_anuncio = get_bsobj_from(html_anuncio)
+    if obj_anuncio is None:
+        return None
+
     span_visible_phone = obj_anuncio.find(id="visible_phone")
     div_codigo_do_anuncio = obj_anuncio.find("div", {"class": "OLXad-id"})
     codigo_do_anuncio = div_codigo_do_anuncio.p.strong.get_text()
@@ -16,7 +22,11 @@ def get_anuncio(url_anuncio):
     phone = "Desconhecido"
     if (span_visible_phone):
         imgurl = span_visible_phone.img['src']
-        img = urlopen(imgurl)
+
+        img = get_site_html(imgurl)
+        if img is None:
+            return None
+
         gif_name = "images/" + codigo_do_anuncio + '.gif'
         localFile = open(gif_name, 'wb')
         localFile.write(img.read())
@@ -29,10 +39,20 @@ def get_anuncio(url_anuncio):
 
 
 def get_anuncios(url):
-    html = urlopen(url)
-    bsObj = BeautifulSoup(html.read(), "html.parser")
+    html = get_site_html(url)
+    if html is None:
+        return None
 
-    links_for_anuncios = bsObj.findAll("a", {"class": "OLXad-list-link"})
+    bsObj = get_bsobj_from(html)
+    if bsObj is None:
+        return None
+
+    try:
+        links_for_anuncios = bsObj.findAll("a", {"class": "OLXad-list-link"})
+    except AttributeError as e:
+        print("Erro ao obter lista de anúncios")
+        print(e)
+        return None
 
     anuncios = []
     for link_anuncio in links_for_anuncios:
@@ -71,16 +91,3 @@ def run():
     dictionary_list_to_csv(anuncios)
 
 run()
-
-# def search_anuncios(url_pesquisada, pagina_inicial, pagina_final):
-#     anuncios = []
-#     if (pagina_inicial == 1):
-#         pagina_inicial = 0
-
-#     if (pagina_inicial == pagina_final):
-#         pagina_final += 1
-
-#     for pagina in range(pagina_inicial, pagina_final):
-#         anuncios_da_pagina = get_anuncios(url_pesquisada + "&o=" + str(pagina))
-#         anuncios.extend(anuncios_da_pagina)
-#     return anuncios
