@@ -15,8 +15,8 @@ def get_anuncio(url_anuncio):
         return None
 
     span_visible_phone = obj_anuncio.find(id="visible_phone")
-    div_codigo_do_anuncio = obj_anuncio.find("div", {"class": "OLXad-id"})
-    codigo_do_anuncio = div_codigo_do_anuncio.p.strong.get_text()
+    span_codigo_do_anuncio = obj_anuncio.find("span", {"class": "sc-gqjmRU"})
+    codigo_do_anuncio = span_codigo_do_anuncio.get_text()
     #print("Código do anúncio: " + codigo_do_anuncio)
     anuncio["codigo"] = codigo_do_anuncio
     phone = "Desconhecido"
